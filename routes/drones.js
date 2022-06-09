@@ -12,14 +12,25 @@ router.get('/drones', async (req, res, next) => {
   }
 });
 
-router.get('/drones/create', (req, res, next) => {
-  // Iteration #3: Add a new drone
-  // ... your code here
+router.get('/drones/create', async (req, res, next) => {
+  try {
+    res.render('drones/create-form')
+  } catch (error) {
+    next(error)
+  }
 });
 
-router.post('/drones/create', (req, res, next) => {
-  // Iteration #3: Add a new drone
-  // ... your code here
+router.post('/drones/create', async (req, res, next) => {
+const {name,propellers,maxSpeed} = req.body;
+const parsedPropellers = parseInt(propellers);
+const parsedMaxSpeed = parseInt(maxSpeed);
+try {
+  await Drone.create({ name, propellers: parsedPropellers, maxSpeed: parsedMaxSpeed });
+  res.redirect('/drones');
+} catch (error) {
+  res.render('/drones/create-form')
+  next(error)
+}
 });
 
 router.get('/drones/:id/edit', (req, res, next) => {
