@@ -33,14 +33,30 @@ try {
 }
 });
 
-router.get('/drones/:id/edit', (req, res, next) => {
-  // Iteration #4: Update the drone
-  // ... your code here
+router.get('/drones/:id/edit', async (req, res, next) => {
+  const {id} = req.params;
+  try {
+    const drone = await Drone.findById(id)
+    console.log({drone})
+    res.render('drones/update-form', drone)
+  } catch (error) {
+    next(error)
+  }
 });
 
-router.post('/drones/:id/edit', (req, res, next) => {
-  // Iteration #4: Update the drone
-  // ... your code here
+router.post('/drones/:id/edit', async (req, res, next) => {
+  const {id} = req.params;
+  const {name,propellers,maxSpeed} = req.body;
+  const parsedPropellers = parseInt(propellers);
+  const parsedMaxSpeed = parseInt(maxSpeed);
+  try {
+    await Drone.findByIdAndUpdate(id, { name, propellers: parsedPropellers, maxSpeed: parsedMaxSpeed });
+    res.redirect('/drones');
+  } 
+  catch (error) {
+    res.render('/drones/update-form')
+    next(error)
+  }
 });
 
 router.post('/drones/:id/delete', (req, res, next) => {
